@@ -1,0 +1,85 @@
+{
+  "common": {
+    "button": {
+      "save": "सहेजें",
+      "cancel": "रद्द करें",
+      "delete": "हटाएं",
+      "edit": "संपादित करें",
+      "create": "बनाएं",
+      "close": "बंद करें",
+      "back": "वापस",
+      "search": "खोजें",
+      "filter": "फ़िल्टर",
+      "reset": "रीसेट करें"
+    },
+    "label": {
+      "name": "नाम",
+      "title": "शीर्षक",
+      "date": "तारीख",
+      "time": "समय",
+      "subject": "विषय",
+      "description": "विवरण",
+      "status": "स्थिति",
+      "progress": "प्रगति"
+    },
+    "message": {
+      "loading": "लोड हो रहा है...",
+      "noData": "कोई डेटा उपलब्ध नहीं",
+      "notFound": "नहीं मिला",
+      "success": "सफल",
+      "error": "त्रुटि",
+      "confirmDelete": "क्या आप वाकई इस आइटम को हटाना चाहते हैं?"
+    }
+  },
+  "nav": {
+    "home": "होम",
+    "subjects": "विषय",
+    "classes": "कक्षाएं",
+    "tasks": "कार्य",
+    "exams": "परीक्षा",
+    "logs": "अध्ययन लॉग",
+    "analytics": "विश्लेषण",
+    "settings": "सेटिंग्स"
+  },
+  "home": {
+    "title": "होम",
+    "thisWeekSummary": "इस सप्ताह का सारांश",
+    "incompleteTasks": "अधूरे कार्य",
+    "overdueTasks": "समय सीमा समाप्त कार्य"
+  },
+  "subjects": {
+    "title": "विषय",
+    "create": "नया विषय बनाएं",
+    "edit": "विषय संपादित करें",
+    "delete": "विषय हटाएं",
+    "noSubjects": "कोई विषय नहीं मिला"
+  },
+  "tasks": {
+    "title": "कार्य",
+    "create": "नया कार्य बनाएं",
+    "edit": "कार्य संपादित करें",
+    "delete": "कार्य हटाएं",
+    "noTasks": "कोई कार्य नहीं मिला"
+  },
+  "exams": {
+    "title": "परीक्षा",
+    "create": "नई परीक्षा बनाएं",
+    "edit": "परीक्षा संपादित करें",
+    "delete": "परीक्षा हटाएं",
+    "daysRemaining": "शेष दिन",
+    "progress": "अध्ययन प्रगति"
+  },
+  "classes": {
+    "title": "कक्षाएं",
+    "create": "नई कक्षा बनाएं",
+    "edit": "कक्षा संपादित करें",
+    "delete": "कक्षा हटाएं",
+    "noClasses": "कोई कक्षा नहीं मिली"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "language": "भाषा",
+    "selectLanguage": "भाषा चुनें"
+  }
+}
+

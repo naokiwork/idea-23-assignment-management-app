@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from 'react'
 import { Container } from '@/components'
-import { ThisWeekSummary } from '@/components/home/ThisWeekSummary'
-import { IncompleteTasks } from '@/components/home/IncompleteTasks'
 import { QuickActions } from '@/components/home/QuickActions'
 import { getAllTasks } from '@/lib/api/tasks'
 import { getAllStudyLogs } from '@/lib/api/studyLogs'
@@ -14,51 +12,6 @@ import { loadData } from '@/lib/storage'
 import { ToastProvider } from '@/components/ui/Toast'
 import type { Task, Subject } from '@/lib/types'
 
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean; error: Error | null }
-> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props)
-    this.state = { hasError: false, error: null }
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error }
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo)
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <Container className="py-8">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-            <h2 className="text-xl font-semibold text-red-900 mb-2">エラーが発生しました</h2>
-            <p className="text-red-700 mb-2">{this.state.error?.message || '不明なエラー'}</p>
-            <pre className="text-xs text-red-600 bg-red-100 p-2 rounded mt-2 overflow-auto">
-              {this.state.error?.stack}
-            </pre>
-            <button
-              onClick={() => {
-                this.setState({ hasError: false, error: null })
-                window.location.reload()
-              }}
-              className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
-            >
-              ページを再読み込み
-            </button>
-          </div>
-        </Container>
-      )
-    }
-
-    return this.props.children
-  }
-}
-
 function HomePageContent() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
@@ -66,11 +19,8 @@ function HomePageContent() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    console.log('HomePageContent: useEffect started')
     try {
-      console.log('HomePageContent: calling loadAllData')
       loadAllData()
-      console.log('HomePageContent: loadAllData completed')
       setIsLoading(false)
     } catch (err) {
       console.error('Error loading data:', err)
@@ -81,16 +31,11 @@ function HomePageContent() {
 
   const loadAllData = () => {
     try {
-      console.log('loadAllData: loading data')
       const data = loadData()
-      console.log('loadAllData: data loaded', data)
       if (data) {
         setSubjects(data.subjects || [])
-        console.log('loadAllData: subjects set', data.subjects?.length || 0)
       }
-      const tasks = getAllTasks()
-      console.log('loadAllData: tasks loaded', tasks.length)
-      setTasks(tasks)
+      setTasks(getAllTasks())
     } catch (err) {
       console.error('Error in loadAllData:', err)
       throw err
@@ -151,7 +96,7 @@ function HomePageContent() {
     return names
   }, [subjects])
 
-  // 完了タスク数（簡易版：サブタスクがすべて完了しているタスク）
+  // 完了タスク数
   const completedTasks = useMemo(() => {
     try {
       const data = loadData()
@@ -185,10 +130,7 @@ function HomePageContent() {
       <Container className="py-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
           <h2 className="text-xl font-semibold text-red-900 mb-2">エラーが発生しました</h2>
-          <p className="text-red-700 mb-2">{error.message}</p>
-          <pre className="text-xs text-red-600 bg-red-100 p-2 rounded mt-2 overflow-auto">
-            {error.stack}
-          </pre>
+          <p className="text-red-700">{error.message}</p>
           <button
             onClick={() => {
               setError(null)
@@ -210,59 +152,39 @@ function HomePageContent() {
     )
   }
 
-  try {
-    return (
-      <Container className="py-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">ホーム</h1>
+  return (
+    <Container className="py-8">
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">ホーム</h1>
 
-        <div className="space-y-6">
-          {/* クイックアクション */}
-          <QuickActions />
+      <div className="space-y-6">
+        {/* クイックアクション */}
+        <QuickActions />
 
-          {/* 今週の状況 */}
-          <ThisWeekSummary
-            totalTasks={thisWeekTasks.length}
-            completedTasks={completedTasks}
-            studyTime={thisWeekStudyTime}
-            subjectTaskCounts={subjectTaskCounts}
-            subjectNames={subjectNames}
-          />
-
-          {/* 未完了タスク */}
-          <IncompleteTasks
-            overdueTasks={overdueTasks}
-            thisWeekTasks={incompleteThisWeekTasks}
-            subjects={subjects}
-            onTaskClick={(task) => {
-              // タスク詳細ページへの遷移（後で実装）
-              console.log('Navigate to task detail:', task.id)
-            }}
-          />
+        {/* 基本情報表示 */}
+        <div className="bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-semibold mb-4">今週の状況</h2>
+          <div className="space-y-2">
+            <p className="text-gray-700">
+              <span className="font-medium">今週のタスク:</span> {thisWeekTasks.length}件
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">期限切れタスク:</span> {overdueTasks.length}件
+            </p>
+            <p className="text-gray-700">
+              <span className="font-medium">今週の学習時間:</span> {Math.round(thisWeekStudyTime / 60)}時間{thisWeekStudyTime % 60}分
+            </p>
+          </div>
         </div>
-      </Container>
-    )
-  } catch (renderError) {
-    console.error('Render error:', renderError)
-    return (
-      <Container className="py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-red-900 mb-2">レンダリングエラー</h2>
-          <p className="text-red-700">
-            {renderError instanceof Error ? renderError.message : '不明なエラー'}
-          </p>
-        </div>
-      </Container>
-    )
-  }
+      </div>
+    </Container>
+  )
 }
 
 export default function HomePage() {
   return (
-    <ErrorBoundary>
-      <ToastProvider>
-        <HomePageContent />
-      </ToastProvider>
-    </ErrorBoundary>
+    <ToastProvider>
+      <HomePageContent />
+    </ToastProvider>
   )
 }
 

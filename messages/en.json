@@ -1,0 +1,85 @@
+{
+  "common": {
+    "button": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "create": "Create",
+      "close": "Close",
+      "back": "Back",
+      "search": "Search",
+      "filter": "Filter",
+      "reset": "Reset"
+    },
+    "label": {
+      "name": "Name",
+      "title": "Title",
+      "date": "Date",
+      "time": "Time",
+      "subject": "Subject",
+      "description": "Description",
+      "status": "Status",
+      "progress": "Progress"
+    },
+    "message": {
+      "loading": "Loading...",
+      "noData": "No data available",
+      "notFound": "Not found",
+      "success": "Success",
+      "error": "Error",
+      "confirmDelete": "Are you sure you want to delete this item?"
+    }
+  },
+  "nav": {
+    "home": "Home",
+    "subjects": "Subjects",
+    "classes": "Classes",
+    "tasks": "Tasks",
+    "exams": "Exams",
+    "logs": "Study Logs",
+    "analytics": "Analytics",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Home",
+    "thisWeekSummary": "This Week's Summary",
+    "incompleteTasks": "Incomplete Tasks",
+    "overdueTasks": "Overdue Tasks"
+  },
+  "subjects": {
+    "title": "Subjects",
+    "create": "Create New Subject",
+    "edit": "Edit Subject",
+    "delete": "Delete Subject",
+    "noSubjects": "No subjects found"
+  },
+  "tasks": {
+    "title": "Tasks",
+    "create": "Create New Task",
+    "edit": "Edit Task",
+    "delete": "Delete Task",
+    "noTasks": "No tasks found"
+  },
+  "exams": {
+    "title": "Exams",
+    "create": "Create New Exam",
+    "edit": "Edit Exam",
+    "delete": "Delete Exam",
+    "daysRemaining": "Days Remaining",
+    "progress": "Study Progress"
+  },
+  "classes": {
+    "title": "Classes",
+    "create": "Create New Class",
+    "edit": "Edit Class",
+    "delete": "Delete Class",
+    "noClasses": "No classes found"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "selectLanguage": "Select Language"
+  }
+}
+

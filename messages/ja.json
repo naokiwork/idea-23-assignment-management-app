@@ -1,0 +1,85 @@
+{
+  "common": {
+    "button": {
+      "save": "保存",
+      "cancel": "キャンセル",
+      "delete": "削除",
+      "edit": "編集",
+      "create": "作成",
+      "close": "閉じる",
+      "back": "戻る",
+      "search": "検索",
+      "filter": "フィルタ",
+      "reset": "リセット"
+    },
+    "label": {
+      "name": "名前",
+      "title": "タイトル",
+      "date": "日付",
+      "time": "時刻",
+      "subject": "科目",
+      "description": "説明",
+      "status": "状態",
+      "progress": "進捗"
+    },
+    "message": {
+      "loading": "読み込み中...",
+      "noData": "データがありません",
+      "notFound": "見つかりません",
+      "success": "成功",
+      "error": "エラー",
+      "confirmDelete": "この項目を削除してもよろしいですか？"
+    }
+  },
+  "nav": {
+    "home": "ホーム",
+    "subjects": "科目一覧",
+    "classes": "授業回",
+    "tasks": "タスク一覧",
+    "exams": "テスト管理",
+    "logs": "学習ログ",
+    "analytics": "グラフ分析",
+    "settings": "設定"
+  },
+  "home": {
+    "title": "ホーム",
+    "thisWeekSummary": "今週の状況",
+    "incompleteTasks": "未完了タスク",
+    "overdueTasks": "期限切れタスク"
+  },
+  "subjects": {
+    "title": "科目一覧",
+    "create": "新しい科目を登録",
+    "edit": "科目を編集",
+    "delete": "科目を削除",
+    "noSubjects": "科目が見つかりません"
+  },
+  "tasks": {
+    "title": "タスク一覧",
+    "create": "新しいタスクを登録",
+    "edit": "タスクを編集",
+    "delete": "タスクを削除",
+    "noTasks": "タスクが見つかりません"
+  },
+  "exams": {
+    "title": "テスト管理",
+    "create": "新しいテストを登録",
+    "edit": "テストを編集",
+    "delete": "テストを削除",
+    "daysRemaining": "残り日数",
+    "progress": "テスト勉強進捗"
+  },
+  "classes": {
+    "title": "授業回一覧",
+    "create": "新しい授業回を登録",
+    "edit": "授業回を編集",
+    "delete": "授業回を削除",
+    "noClasses": "授業回が見つかりません"
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "selectLanguage": "言語を選択"
+  }
+}
+
