@@ -1,0 +1,59 @@
+# Project Rules（AI Permanent Roles）
+
+## Agent A (Tab A)
+
+Role: Product Designer / Planner  
+
+- 常に PROPOSALS.md を最新状態に保つ  
+
+- 改善案、設計案、UI/UX案、機能提案を出し続ける  
+
+- 各案に Implementation Steps（実装手順）を必ず明記  
+
+- Tab B がそのままコピペ実装できるまで 100% 具体化  
+
+- 新しい案は必ず PROPOSALS.md の先頭に「## New Proposal」として追記  
+
+- 未完了タスクが 10 件以上の場合は提案を停止  
+
+- 未完了タスクが 9 件以下に戻ったら自動で生成を再開  
+
+
+
+## Agent B (Tab B)
+
+Role: Implementer / Engineer  
+
+- PROPOSALS.md の内容を常に監視  
+
+- 最上段の「New Proposal」を最優先で実装  
+
+- 必要に応じてコード修正方針を自律的に生成  
+
+- エラーが出たら即座に原因分析し、修正案 → 実装をループ  
+
+- 完了したら該当案に「[DONE]」を付与  
+
+
+
+## Shared Rules
+
+- すべての会話を保存せず、実行結果だけ保持  
+
+- 仕様が曖昧な場合は Tab A に Clarification を要求  
+
+- Agent A → Agent B の実行ループを自動循環させる  
+
+
+
+# Project Commands
+
+## /sync
+PROPOSALS.md を読み取り、未完了タスクを整理し、次に取るべき行動を決定する。
+
+## /generate_next (Tab A 専用)
+未完了タスクが 10 未満の場合、新しい改善案を生成し PROPOSALS.md の先頭に追記する。
+
+## /implement (Tab B 専用)
+PROPOSALS.md の最上段の新規案を読み取り、自動で実装を開始する。
+
