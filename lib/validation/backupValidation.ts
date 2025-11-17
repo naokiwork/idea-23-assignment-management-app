@@ -1,41 +1,45 @@
 /**
- * バックアップデータ検証関数
+ * バックアップデータのバリデーション
  */
 
 import type { BackupData } from '../types'
 
 /**
- * バックアップデータの検証
+ * バックアップデータの型ガード
  */
-export function validateBackupData(data: unknown): BackupData | null {
+export function isValidBackupData(data: unknown): data is BackupData {
   if (!data || typeof data !== 'object') {
-    return null
+    return false
   }
 
-  const backup = data as Partial<BackupData>
+  const obj = data as Record<string, unknown>
 
   // 必須フィールドのチェック
-  if (
-    !backup.version ||
-    !backup.exportedAt ||
-    !Array.isArray(backup.subjects) ||
-    !Array.isArray(backup.timetables) ||
-    !Array.isArray(backup.classes) ||
-    !Array.isArray(backup.tasks) ||
-    !Array.isArray(backup.subtasks) ||
-    !Array.isArray(backup.studyLogs) ||
-    !Array.isArray(backup.exams)
-  ) {
-    return null
-  }
+  if (!Array.isArray(obj.subjects)) return false
+  if (!Array.isArray(obj.tasks)) return false
+  if (!Array.isArray(obj.subtasks)) return false
+  if (!Array.isArray(obj.studyLogs)) return false
+  if (!Array.isArray(obj.exams)) return false
+  if (!Array.isArray(obj.timetables)) return false
+  if (!Array.isArray(obj.classes)) return false
 
-  // バージョン互換性のチェック（簡易版）
-  // 実際の実装では、バージョン番号に基づいて互換性を判定する
-  const version = backup.version
-  if (!version || !version.match(/^\d+\.\d+\.\d+$/)) {
-    return null
-  }
+  // バージョンのチェック
+  if (typeof obj.version !== 'string') return false
 
-  return backup as BackupData
+  return true
 }
 
+/**
+ * バックアップデータを安全にパース
+ */
+export function parseBackupData(jsonString: string): BackupData | null {
+  try {
+    const data = JSON.parse(jsonString)
+    if (isValidBackupData(data)) {
+      return data
+    }
+    return null
+  } catch {
+    return null
+  }
+}

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { TranslationProviderWrapper } from '@/components/providers/TranslationProviderWrapper'
 
 export const metadata: Metadata = {
   title: '学習タスク管理アプリ',
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="antialiased">
-        {children}
+        <TranslationProviderWrapper>
+          {children}
+        </TranslationProviderWrapper>
       </body>
     </html>
   )

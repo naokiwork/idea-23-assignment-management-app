@@ -20,7 +20,7 @@ export interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectE
 export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   ({ label, error, helperText, options, placeholder, className = '', ...props }, ref) => {
     const hasError = !!error
-    const selectId = props.id || `select-${Math.random().toString(36).substr(2, 9)}`
+    const selectId = props.id || `select-${Math.random().toString(36).slice(2, 11)}`
 
     return (
       <div className="w-full">

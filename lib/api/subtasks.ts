@@ -6,12 +6,13 @@
 import { loadData, saveData } from '../storage'
 import { createInitialData } from '../initialData'
 import type { Subtask, BackupData } from '../types'
+import { generateId as generateSafeId } from '../utils/idGenerator'
 
 /**
- * IDを生成する（簡易版）
+ * IDを生成する
  */
 function generateId(): string {
-  return `st-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  return generateSafeId('st')
 }
 
 /**
@@ -94,5 +95,15 @@ export function getSubtasksByTaskId(taskId: string): Subtask[] {
   return data.subtasks
     .filter((st) => st.parentTaskId === taskId)
     .sort((a, b) => a.name.localeCompare(b.name))
+}
+
+/**
+ * 全サブタスクを取得
+ */
+export function getAllSubtasks(): Subtask[] {
+  const data = loadData()
+  if (!data) return []
+
+  return [...data.subtasks]
 }
 

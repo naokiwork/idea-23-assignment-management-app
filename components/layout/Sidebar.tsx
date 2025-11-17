@@ -5,24 +5,26 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Home, BookOpen, CheckSquare, FileText, BarChart3, Settings, Calendar, GraduationCap } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 
 export interface SidebarProps {
   className?: string
 }
 
 const navigationItems = [
-  { href: '/', label: 'ホーム', icon: Home },
-  { href: '/subjects', label: '科目一覧', icon: BookOpen },
-  { href: '/classes', label: '授業回', icon: GraduationCap },
-  { href: '/tasks', label: 'タスク一覧', icon: CheckSquare },
-  { href: '/exams', label: 'テスト管理', icon: Calendar },
-  { href: '/logs', label: '学習ログ', icon: FileText },
-  { href: '/analytics', label: 'グラフ分析', icon: BarChart3 },
-  { href: '/settings', label: '設定', icon: Settings },
+  { href: '/', labelKey: 'nav.home', icon: Home },
+  { href: '/subjects', labelKey: 'nav.subjects', icon: BookOpen },
+  { href: '/classes', labelKey: 'nav.classes', icon: GraduationCap },
+  { href: '/tasks', labelKey: 'nav.tasks', icon: CheckSquare },
+  { href: '/exams', labelKey: 'nav.exams', icon: Calendar },
+  { href: '/logs', labelKey: 'nav.logs', icon: FileText },
+  { href: '/analytics', labelKey: 'nav.analytics', icon: BarChart3 },
+  { href: '/settings', labelKey: 'nav.settings', icon: Settings },
 ]
 
 export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
   const pathname = usePathname()
+  const { t } = useTranslation()
 
   return (
     <aside
@@ -48,7 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ className }) => {
               )}
             >
               <Icon className="h-5 w-5" />
-              <span>{item.label}</span>
+              <span>{t(item.labelKey)}</span>
             </Link>
           )
         })}

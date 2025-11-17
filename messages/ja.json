@@ -10,7 +10,8 @@
       "back": "戻る",
       "search": "検索",
       "filter": "フィルタ",
-      "reset": "リセット"
+      "reset": "リセット",
+      "retry": "再試行"
     },
     "label": {
       "name": "名前",
@@ -29,7 +30,15 @@
       "success": "成功",
       "error": "エラー",
       "confirmDelete": "この項目を削除してもよろしいですか？"
+    },
+    "count": "{{count}}件",
+    "time": {
+      "hours": "時間",
+      "minutes": "分"
     }
+  },
+  "app": {
+    "title": "学習タスク管理アプリ"
   },
   "nav": {
     "home": "ホーム",
@@ -39,13 +48,16 @@
     "exams": "テスト管理",
     "logs": "学習ログ",
     "analytics": "グラフ分析",
-    "settings": "設定"
+    "settings": "設定",
+    "menu": "メニューを開く"
   },
   "home": {
     "title": "ホーム",
     "thisWeekSummary": "今週の状況",
     "incompleteTasks": "未完了タスク",
-    "overdueTasks": "期限切れタスク"
+    "overdueTasks": "期限切れタスク",
+    "thisWeekTasks": "今週のタスク",
+    "thisWeekStudyTime": "今週の学習時間"
   },
   "subjects": {
     "title": "科目一覧",

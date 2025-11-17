@@ -16,6 +16,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge'
 import { ProgressBar } from '@/components/ui/ProgressBar'
 import { calculateTaskCompletionRate } from '@/lib/utils/completionRate'
 import { DateDisplay } from '@/components/ui/DateDisplay'
+import { ResourceRecommendation } from '@/components/recommendations/ResourceRecommendation'
 
 function TaskDetailPageContent() {
   const params = useParams()
@@ -191,6 +192,9 @@ function TaskDetailPageContent() {
             </CardBody>
           </Card>
         )}
+
+        {/* 推奨学習リソース */}
+        <ResourceRecommendation taskId={task.id} />
       </div>
 
       <TaskForm

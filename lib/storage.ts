@@ -3,7 +3,9 @@
  * ローカルストレージを使用してデータを保存/読み込み
  */
 
-import type { BackupData } from './types';
+import type { BackupData } from './types'
+import { logger } from './utils/logger'
+import { parseBackupData } from './validation/backupValidation'
 
 const STORAGE_KEY = 'study-app-data';
 
@@ -18,8 +20,11 @@ export function saveData(data: BackupData): void {
       localStorage.setItem(STORAGE_KEY, jsonString);
     }
   } catch (error) {
-    console.error('Failed to save data to localStorage:', error);
-    throw new Error('データの保存に失敗しました');
+    logger.error('Failed to save data to localStorage:', error)
+    if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+      throw new Error('ストレージの容量が不足しています。データを削除してから再度お試しください。')
+    }
+    throw new Error('データの保存に失敗しました')
   }
 }
 
@@ -33,27 +38,25 @@ export function loadData(): BackupData | null {
       return null;
     }
 
-    const jsonString = localStorage.getItem(STORAGE_KEY);
+    const jsonString = localStorage.getItem(STORAGE_KEY)
     if (!jsonString) {
-      return null;
+      return null
     }
 
-    const data = JSON.parse(jsonString) as BackupData;
-    
-    // 基本的なバリデーション
-    if (!data || typeof data !== 'object') {
-      console.warn('Invalid data format in localStorage');
-      return null;
+    const data = parseBackupData(jsonString)
+    if (!data) {
+      logger.warn('Invalid data format in localStorage')
+      return null
     }
 
-    return data;
+    return data
   } catch (error) {
-    console.error('Failed to load data from localStorage:', error);
+    logger.error('Failed to load data from localStorage:', error)
     // JSON パースエラーの場合、データをクリアして null を返す
     if (error instanceof SyntaxError) {
-      clearData();
+      clearData()
     }
-    return null;
+    return null
   }
 }
 
@@ -66,8 +69,8 @@ export function clearData(): void {
       localStorage.removeItem(STORAGE_KEY);
     }
   } catch (error) {
-    console.error('Failed to clear data from localStorage:', error);
-    throw new Error('データのクリアに失敗しました');
+    logger.error('Failed to clear data from localStorage:', error)
+    throw new Error('データのクリアに失敗しました')
   }
 }
 

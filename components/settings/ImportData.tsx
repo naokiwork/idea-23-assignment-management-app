@@ -5,7 +5,7 @@ import { Button, Input } from '../ui'
 import { Modal } from '../ui'
 import { Upload } from 'lucide-react'
 import { importBackupFile, mergeBackupData } from '@/lib/api/backup'
-import { validateBackupData } from '@/lib/validation/backupValidation'
+import { isValidBackupData } from '@/lib/validation/backupValidation'
 import { useToast } from '../ui/Toast'
 import { Select } from '../ui/Select'
 
@@ -28,14 +28,13 @@ export const ImportData: React.FC = () => {
 
     try {
       const backupData = await importBackupFile(file)
-      const validatedData = validateBackupData(backupData)
-
-      if (!validatedData) {
+      
+      if (!isValidBackupData(backupData)) {
         showToast('バックアップファイルの形式が正しくありません', 'error')
         return
       }
 
-      mergeBackupData(validatedData, mergeMode)
+      mergeBackupData(backupData, mergeMode)
       showToast('データをインポートしました', 'success')
       setIsModalOpen(false)
       setFile(null)

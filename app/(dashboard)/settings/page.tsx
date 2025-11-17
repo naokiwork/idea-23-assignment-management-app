@@ -4,6 +4,8 @@ import React from 'react'
 import { Container } from '@/components'
 import { LanguageSelector } from '@/components/settings/LanguageSelector'
 import { NotificationSettings } from '@/components/settings/NotificationSettings'
+import { KeyboardShortcuts } from '@/components/settings/KeyboardShortcuts'
+import { SyncStatus } from '@/components/sync/SyncStatus'
 import { ExportData } from '@/components/settings/ExportData'
 import { ImportData } from '@/components/settings/ImportData'
 import { ToastProvider } from '@/components/ui/Toast'
@@ -28,6 +30,10 @@ function SettingsPageContent() {
           </Card>
 
           <NotificationSettings />
+
+          <KeyboardShortcuts />
+
+          <SyncStatus />
 
           <ExportData />
           <ImportData />

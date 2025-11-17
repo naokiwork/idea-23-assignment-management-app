@@ -18,6 +18,7 @@ export function createInitialData(): BackupData {
     subtasks: [],
     studyLogs: [],
     exams: [],
+    learningResources: [],
     version: '0.1.0',
     exportedAt: new Date().toISOString(),
   };
@@ -128,6 +129,7 @@ export function createSampleData(): BackupData {
         testRange: '第1章〜第3章',
       },
     ],
+    learningResources: [],
     version: '0.1.0',
     exportedAt: now.toISOString(),
   };

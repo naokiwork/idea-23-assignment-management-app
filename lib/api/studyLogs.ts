@@ -6,12 +6,13 @@
 import { loadData, saveData } from '../storage'
 import { createInitialData } from '../initialData'
 import type { StudyLog, BackupData } from '../types'
+import { generateId as generateSafeId } from '../utils/idGenerator'
 
 /**
- * IDを生成する（簡易版）
+ * IDを生成する
  */
 function generateId(): string {
-  return `log-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+  return generateSafeId('log')
 }
 
 /**

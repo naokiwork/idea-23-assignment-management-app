@@ -11,7 +11,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ label, error, helperText, className = '', ...props }, ref) => {
     const hasError = !!error
-    const inputId = props.id || `input-${Math.random().toString(36).substr(2, 9)}`
+    const inputId = props.id || `input-${Math.random().toString(36).slice(2, 11)}`
 
     return (
       <div className="w-full">

@@ -24,15 +24,17 @@ export function filterByWeek(tasks: Task[]): Task[] {
 
 /**
  * 未完了タスク（サブタスクがすべて完了していない）
+ * @param tasks フィルタリングするタスクの配列
+ * @param subtasks サブタスクの配列（オプション、指定しない場合はloadDataから取得）
  */
-export function filterIncomplete(tasks: Task[]): Task[] {
-  const data = loadData()
-  if (!data) return []
+export function filterIncomplete(tasks: Task[], subtasks?: Array<{ parentTaskId: string; status: string }>): Task[] {
+  const data = subtasks ? { subtasks } : loadData()
+  if (!data || !data.subtasks) return []
 
   return tasks.filter((task) => {
-    const subtasks = data.subtasks.filter((st) => st.parentTaskId === task.id)
-    if (subtasks.length === 0) return true // サブタスクがない場合は未完了とみなす
-    return !subtasks.every((st) => st.status === 'completed')
+    const taskSubtasks = data.subtasks.filter((st) => st.parentTaskId === task.id)
+    if (taskSubtasks.length === 0) return true // サブタスクがない場合は未完了とみなす
+    return !taskSubtasks.every((st) => st.status === 'completed')
   })
 }
 

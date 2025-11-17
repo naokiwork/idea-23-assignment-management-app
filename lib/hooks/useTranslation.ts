@@ -1,41 +1,48 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'react'
 import { getCurrentLanguage, setLanguage, type SupportedLanguage } from '../i18n/languageManager'
+import { logger } from '../utils/logger'
 
 type TranslationKey = string
 type TranslationParams = Record<string, string | number>
 
-let translations: Record<string, any> = {}
-let currentLang: SupportedLanguage = 'ja'
+interface TranslationContextType {
+  t: (key: TranslationKey, params?: TranslationParams) => string
+  currentLanguage: SupportedLanguage
+  changeLanguage: (lang: SupportedLanguage) => void
+  isLoading: boolean
+}
+
+const TranslationContext = createContext<TranslationContextType | undefined>(undefined)
 
 /**
  * 翻訳を読み込む
  */
-async function loadTranslations(lang: SupportedLanguage): Promise<void> {
+async function loadTranslations(lang: SupportedLanguage): Promise<Record<string, any>> {
   try {
     const translationModule = await import(`@/messages/${lang}.json`)
-    translations = translationModule.default || translationModule
-    currentLang = lang
+    return translationModule.default || translationModule
   } catch (error) {
-    console.error(`Failed to load translations for ${lang}:`, error)
+    logger.error(`Failed to load translations for ${lang}:`, error)
     // フォールバック: 日本語を読み込む
     if (lang !== 'ja') {
       try {
         const fallbackModule = await import('@/messages/ja.json')
-        translations = fallbackModule.default || fallbackModule
-        currentLang = 'ja'
+        return fallbackModule.default || fallbackModule
       } catch (fallbackError) {
-        console.error('Failed to load fallback translations:', fallbackError)
+        logger.error('Failed to load fallback translations:', fallbackError)
+        return {}
       }
     }
+    return {}
   }
 }
 
 /**
  * 翻訳キーから値を取得
  */
-function getTranslation(key: TranslationKey, params?: TranslationParams): string {
+function getTranslation(translations: Record<string, any>, key: TranslationKey, params?: TranslationParams): string {
   const keys = key.split('.')
   let value: any = translations
 
@@ -63,14 +70,16 @@ function getTranslation(key: TranslationKey, params?: TranslationParams): string
 }
 
 /**
- * 翻訳フック
+ * 翻訳プロバイダー
  */
-export function useTranslation() {
+export function TranslationProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<SupportedLanguage>(getCurrentLanguage())
+  const [translations, setTranslations] = useState<Record<string, any>>({})
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadTranslations(lang).then(() => {
+    loadTranslations(lang).then((loadedTranslations) => {
+      setTranslations(loadedTranslations)
       setIsLoading(false)
     })
   }, [lang])
@@ -78,24 +87,48 @@ export function useTranslation() {
   const changeLanguage = useCallback((newLang: SupportedLanguage) => {
     setLanguage(newLang)
     setIsLoading(true)
-    loadTranslations(newLang).then(() => {
+    loadTranslations(newLang).then((loadedTranslations) => {
+      setTranslations(loadedTranslations)
       setLangState(newLang)
       setIsLoading(false)
+      // 言語変更を通知するためにイベントを発火
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('languageChanged', { detail: newLang }))
+      }
     })
   }, [])
 
   const t = useCallback(
     (key: TranslationKey, params?: TranslationParams): string => {
-      return getTranslation(key, params)
+      return getTranslation(translations, key, params)
     },
-    []
+    [translations]
   )
 
-  return {
+  const contextValue: TranslationContextType = {
     t,
     currentLanguage: lang,
     changeLanguage,
     isLoading,
   }
+
+  return React.createElement(TranslationContext.Provider, { value: contextValue }, children)
 }
 
+/**
+ * 翻訳フック
+ */
+export function useTranslation() {
+  const context = useContext(TranslationContext)
+  if (!context) {
+    // フォールバック: コンテキストがない場合は基本的な実装を返す
+    const fallbackT = (key: TranslationKey) => key
+    return {
+      t: fallbackT,
+      currentLanguage: 'ja' as SupportedLanguage,
+      changeLanguage: () => {},
+      isLoading: false,
+    }
+  }
+  return context
+}

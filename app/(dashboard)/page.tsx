@@ -11,19 +11,28 @@ import { calculateStudyTime } from '@/lib/utils/studyTimeAggregation'
 import { loadData } from '@/lib/storage'
 import { ToastProvider } from '@/components/ui/Toast'
 import type { Task, Subject } from '@/lib/types'
+import { useKeyboardShortcuts, createDefaultShortcuts } from '@/lib/hooks/useKeyboardShortcuts'
+import { useRouter } from 'next/navigation'
+import { logger } from '@/lib/utils/logger'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 
 function HomePageContent() {
   const [tasks, setTasks] = useState<Task[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [error, setError] = useState<Error | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter()
+  const { t } = useTranslation()
+
+  // キーボードショートカットを有効化
+  useKeyboardShortcuts(createDefaultShortcuts(router))
 
   useEffect(() => {
     try {
       loadAllData()
       setIsLoading(false)
     } catch (err) {
-      console.error('Error loading data:', err)
+      logger.error('Error loading data:', err)
       setError(err instanceof Error ? err : new Error('データの読み込みに失敗しました'))
       setIsLoading(false)
     }
@@ -37,7 +46,7 @@ function HomePageContent() {
       }
       setTasks(getAllTasks())
     } catch (err) {
-      console.error('Error in loadAllData:', err)
+      logger.error('Error in loadAllData:', err)
       throw err
     }
   }
@@ -55,14 +64,20 @@ function HomePageContent() {
     return filterOverdue(tasks)
   }, [tasks])
 
+  // サブタスクデータを一度だけ取得
+  const subtasksData = useMemo(() => {
+    const data = loadData()
+    return data?.subtasks || []
+  }, [])
+
   // 未完了タスク（今週中に締切）
   const incompleteThisWeekTasks = useMemo(() => {
-    const incomplete = filterIncomplete(thisWeekTasks)
+    const incomplete = filterIncomplete(thisWeekTasks, subtasksData)
     return incomplete.filter((task) => {
       const deadline = new Date(task.deadline)
       return isThisWeek(deadline)
     })
-  }, [thisWeekTasks])
+  }, [thisWeekTasks, subtasksData])
 
   // 今週の学習時間
   const thisWeekStudyTime = useMemo(() => {
@@ -74,7 +89,7 @@ function HomePageContent() {
       })
       return calculateStudyTime(weekLogs)
     } catch (err) {
-      console.error('Error calculating study time:', err)
+      logger.error('Error calculating study time:', err)
       return 0
     }
   }, [weekStart, weekEnd])
@@ -99,18 +114,16 @@ function HomePageContent() {
   // 完了タスク数
   const completedTasks = useMemo(() => {
     try {
-      const data = loadData()
-      if (!data) return 0
       return thisWeekTasks.filter((task) => {
-        const subtasks = (data.subtasks || []).filter((st) => st.parentTaskId === task.id)
-        if (subtasks.length === 0) return false
-        return subtasks.every((st) => st.status === 'completed')
+        const taskSubtasks = subtasksData.filter((st) => st.parentTaskId === task.id)
+        if (taskSubtasks.length === 0) return false
+        return taskSubtasks.every((st) => st.status === 'completed')
       }).length
     } catch (err) {
-      console.error('Error calculating completed tasks:', err)
+      logger.error('Error calculating completed tasks:', err)
       return 0
     }
-  }, [thisWeekTasks])
+  }, [thisWeekTasks, subtasksData])
 
   if (isLoading) {
     return (
@@ -118,7 +131,7 @@ function HomePageContent() {
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">読み込み中...</p>
+            <p className="text-gray-600">{t('common.message.loading')}</p>
           </div>
         </div>
       </Container>
@@ -129,7 +142,7 @@ function HomePageContent() {
     return (
       <Container className="py-8">
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-red-900 mb-2">エラーが発生しました</h2>
+          <h2 className="text-xl font-semibold text-red-900 mb-2">{t('common.message.error')}</h2>
           <p className="text-red-700">{error.message}</p>
           <button
             onClick={() => {
@@ -145,7 +158,7 @@ function HomePageContent() {
             }}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
           >
-            再試行
+            {t('common.button.retry')}
           </button>
         </div>
       </Container>
@@ -154,7 +167,7 @@ function HomePageContent() {
 
   return (
     <Container className="py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">ホーム</h1>
+      <h1 className="text-3xl font-bold text-gray-900 mb-6">{t('home.title')}</h1>
 
       <div className="space-y-6">
         {/* クイックアクション */}
@@ -162,16 +175,16 @@ function HomePageContent() {
 
         {/* 基本情報表示 */}
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">今週の状況</h2>
+          <h2 className="text-xl font-semibold mb-4">{t('home.thisWeekSummary')}</h2>
           <div className="space-y-2">
             <p className="text-gray-700">
-              <span className="font-medium">今週のタスク:</span> {thisWeekTasks.length}件
+              <span className="font-medium">{t('home.thisWeekTasks')}:</span> {t('common.count', { count: thisWeekTasks.length })}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">期限切れタスク:</span> {overdueTasks.length}件
+              <span className="font-medium">{t('home.overdueTasks')}:</span> {t('common.count', { count: overdueTasks.length })}
             </p>
             <p className="text-gray-700">
-              <span className="font-medium">今週の学習時間:</span> {Math.round(thisWeekStudyTime / 60)}時間{thisWeekStudyTime % 60}分
+              <span className="font-medium">{t('home.thisWeekStudyTime')}:</span> {Math.round(thisWeekStudyTime / 60)}{t('common.time.hours')}{thisWeekStudyTime % 60}{t('common.time.minutes')}
             </p>
           </div>
         </div>

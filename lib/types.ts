@@ -94,6 +94,23 @@ export interface Exam {
 }
 
 /**
+ * 学習リソース（Learning Resource）
+ */
+export interface LearningResource {
+  id: string;
+  title: string;
+  description?: string;
+  url?: string;
+  type: 'book' | 'video' | 'article' | 'website' | 'other';
+  subjectIds?: string[]; // 関連科目ID
+  taskTypeIds?: TaskType[]; // 関連タスク種別
+  tags?: string[];
+  rating?: number; // 評価（1-5）
+  createdAt: string; // ISO 8601形式の日付文字列
+  updatedAt?: string; // ISO 8601形式の日付文字列
+}
+
+/**
  * 2.10 科目テンプレート（Subject Template）
  */
 export interface SubjectTemplate {
@@ -119,6 +136,7 @@ export interface BackupData {
   subtasks: Subtask[];
   studyLogs: StudyLog[];
   exams: Exam[];
+  learningResources?: LearningResource[];
   // メタデータ
   version: string;
   exportedAt: string; // ISO 8601形式の日付文字列
