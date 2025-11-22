@@ -64,14 +64,28 @@
     "create": "Create New Subject",
     "edit": "Edit Subject",
     "delete": "Delete Subject",
-    "noSubjects": "No subjects found"
+    "noSubjects": "No subjects found",
+    "searchPlaceholder": "Search by subject name...",
+    "noResults": "No search results",
+    "notRegistered": "No subjects registered",
+    "confirmDelete": "Are you sure you want to delete this subject? Related timetables will also be deleted.",
+    "deleteSuccess": "Subject deleted successfully",
+    "deleteError": "Failed to delete subject",
+    "filterBySubject": "Filter by Subject",
+    "allSubjects": "All Subjects"
   },
   "tasks": {
     "title": "Tasks",
     "create": "Create New Task",
     "edit": "Edit Task",
     "delete": "Delete Task",
-    "noTasks": "No tasks found"
+    "noTasks": "No tasks found",
+    "searchPlaceholder": "Search by task name...",
+    "noResults": "No search results",
+    "notRegistered": "No tasks",
+    "confirmDelete": "Are you sure you want to delete this task? Related subtasks will also be deleted.",
+    "deleteSuccess": "Task deleted successfully",
+    "deleteError": "Failed to delete task"
   },
   "exams": {
     "title": "Exams",
@@ -79,14 +93,28 @@
     "edit": "Edit Exam",
     "delete": "Delete Exam",
     "daysRemaining": "Days Remaining",
-    "progress": "Study Progress"
+    "progress": "Study Progress",
+    "notRegistered": "No exams registered",
+    "confirmDelete": "Are you sure you want to delete this exam?",
+    "deleteSuccess": "Exam deleted successfully",
+    "deleteError": "Failed to delete exam",
+    "filterBySubject": "Filter by Subject",
+    "allSubjects": "All Subjects"
   },
   "classes": {
     "title": "Classes",
     "create": "Create New Class",
     "edit": "Edit Class",
     "delete": "Delete Class",
-    "noClasses": "No classes found"
+    "noClasses": "No classes found",
+    "searchPlaceholder": "Search by class title or subject name...",
+    "noResults": "No search results",
+    "notRegistered": "No classes registered",
+    "confirmDelete": "Are you sure you want to delete this class?",
+    "deleteSuccess": "Class deleted successfully",
+    "deleteError": "Failed to delete class",
+    "filterBySubject": "Filter by Subject",
+    "allSubjects": "All Subjects"
   },
   "settings": {
     "title": "Settings",

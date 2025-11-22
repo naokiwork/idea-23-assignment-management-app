@@ -22,11 +22,13 @@ import { calculateTaskCompletionRate } from '@/lib/utils/completionRate'
 import { getSubtasksByTaskId } from '@/lib/api/subtasks'
 import { Plus, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 import type { Task, Subject, TaskType } from '@/lib/types'
 
 function TasksPageContent() {
   const router = useRouter()
   const { showToast } = useToast()
+  const { t } = useTranslation()
   const [tasks, setTasks] = useState<Task[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -101,14 +103,14 @@ function TasksPageContent() {
   }
 
   const handleDelete = (taskId: string) => {
-    if (confirm('このタスクを削除しますか？関連するサブタスクも削除されます。')) {
+    if (confirm(t('tasks.confirmDelete'))) {
       try {
         deleteTask(taskId)
-        showToast('タスクを削除しました', 'success')
+        showToast(t('tasks.deleteSuccess'), 'success')
         loadAllData()
       } catch (error) {
         console.error('Failed to delete task:', error)
-        showToast('タスクの削除に失敗しました', 'error')
+        showToast(t('tasks.deleteError'), 'error')
       }
     }
   }
@@ -131,10 +133,10 @@ function TasksPageContent() {
   return (
     <Container className="py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">タスク一覧</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('tasks.title')}</h1>
           <Button onClick={handleCreate} variant="primary">
             <Plus className="h-5 w-5 mr-2" />
-            新しいタスクを登録
+            {t('tasks.create')}
           </Button>
         </div>
 
@@ -143,7 +145,7 @@ function TasksPageContent() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="タスク名で検索..."
+              placeholder={t('tasks.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -162,7 +164,7 @@ function TasksPageContent() {
 
         {filteredAndSortedTasks.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p>{searchQuery ? '検索結果がありません' : 'タスクがありません'}</p>
+            <p>{searchQuery ? t('tasks.noResults') : t('tasks.notRegistered')}</p>
           </div>
         ) : (
           <div className="space-y-4">

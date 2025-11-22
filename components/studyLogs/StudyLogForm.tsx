@@ -9,6 +9,11 @@ import { calculateDuration, formatDuration } from '@/lib/utils/timeCalculation'
 import { loadData } from '@/lib/storage'
 import type { StudyLog, Task } from '@/lib/types'
 import { useToast } from '../ui/Toast'
+import { VoiceInput } from '../voice/VoiceInput'
+import { getAutoCompleteEngine } from '@/lib/utils/autoCompleteEngine'
+import { AutoCompleteSuggestions } from '../autocomplete/AutoCompleteSuggestions'
+import { TemplateList } from '../templates/TemplateList'
+import { applyTemplate, generateTemplateVariables } from '@/lib/utils/templateApplier'
 
 export interface StudyLogFormProps {
   isOpen: boolean
@@ -35,6 +40,10 @@ export const StudyLogForm: React.FC<StudyLogFormProps> = ({
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [contentSuggestions, setContentSuggestions] = useState<Array<{ value: string; frequency: number }>>([])
+  const [showContentSuggestions, setShowContentSuggestions] = useState(false)
+  const [showTemplates, setShowTemplates] = useState(false)
+  const engine = getAutoCompleteEngine()
 
   useEffect(() => {
     // タスク一覧を読み込む
@@ -69,6 +78,14 @@ export const StudyLogForm: React.FC<StudyLogFormProps> = ({
         delete newErrors[name]
         return newErrors
       })
+    }
+    // 実施内容の自動補完
+    if (name === 'content' && value) {
+      const suggestions = engine.getMemoCompletions(value)
+      setContentSuggestions(suggestions)
+      setShowContentSuggestions(suggestions.length > 0)
+    } else if (name === 'content' && !value) {
+      setShowContentSuggestions(false)
     }
   }
 
@@ -163,15 +180,26 @@ export const StudyLogForm: React.FC<StudyLogFormProps> = ({
         />
 
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            label="開始時刻"
-            type="time"
-            name="startTime"
-            value={formData.startTime}
-            onChange={handleChange}
-            error={errors.startTime}
-            required
-          />
+          <div>
+            <Input
+              label="開始時刻"
+              type="time"
+              name="startTime"
+              value={formData.startTime}
+              onChange={handleChange}
+              error={errors.startTime}
+              required
+            />
+            {formData.startTime && (
+              <AutoCompleteSuggestions
+                suggestions={engine.getTimeCompletions(formData.startTime)}
+                onSelect={(value) => {
+                  setFormData({ ...formData, startTime: value })
+                }}
+                visible={formData.startTime.length > 0}
+              />
+            )}
+          </div>
           <Input
             label="終了時刻"
             type="time"
@@ -191,27 +219,74 @@ export const StudyLogForm: React.FC<StudyLogFormProps> = ({
           </div>
         )}
 
-        <Select
-          label="対象タスク"
-          name="taskId"
-          value={formData.taskId}
-          onChange={handleChange}
-          options={taskOptions}
-          placeholder="タスクを選択"
-          error={errors.taskId}
-          required
-        />
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">対象タスク</label>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowTemplates(!showTemplates)}
+            >
+              {showTemplates ? 'テンプレートを隠す' : 'テンプレートから選択'}
+            </Button>
+          </div>
+          <Select
+            name="taskId"
+            value={formData.taskId}
+            onChange={handleChange}
+            options={taskOptions}
+            placeholder="タスクを選択"
+            error={errors.taskId}
+            required
+          />
+          {showTemplates && (
+            <div className="mt-4">
+              <TemplateList
+                onSelect={(template) => {
+                  const variables = generateTemplateVariables(formData.taskId, formData.date)
+                  const applied = applyTemplate(template, variables)
+                  setFormData((prev) => ({
+                    ...prev,
+                    content: applied.content || prev.content,
+                    startTime: applied.startTime || prev.startTime,
+                    endTime: applied.endTime || prev.endTime,
+                  }))
+                  setShowTemplates(false)
+                }}
+                showActions={false}
+              />
+            </div>
+          )}
+        </div>
 
-        <Textarea
-          label="実施内容"
-          name="content"
-          value={formData.content}
-          onChange={handleChange}
-          error={errors.content}
-          rows={4}
-          placeholder="学習した内容を記録してください"
-          required
-        />
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-gray-700">実施内容</label>
+            <VoiceInput
+              onTranscript={(text) => {
+                setFormData({ ...formData, content: formData.content + (formData.content ? ' ' : '') + text })
+              }}
+            />
+          </div>
+          <Textarea
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
+            error={errors.content}
+            rows={4}
+            placeholder="学習した内容を記録してください（音声入力も利用可能）"
+            required
+          />
+          <AutoCompleteSuggestions
+            suggestions={contentSuggestions}
+            onSelect={(value) => {
+              setFormData({ ...formData, content: value })
+              setShowContentSuggestions(false)
+            }}
+            visible={showContentSuggestions}
+          />
+        </div>
 
         <Input
           label="進捗量（任意）"

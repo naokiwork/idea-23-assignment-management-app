@@ -64,14 +64,28 @@
     "create": "新しい科目を登録",
     "edit": "科目を編集",
     "delete": "科目を削除",
-    "noSubjects": "科目が見つかりません"
+    "noSubjects": "科目が見つかりません",
+    "searchPlaceholder": "科目名で検索...",
+    "noResults": "検索結果がありません",
+    "notRegistered": "科目が登録されていません",
+    "confirmDelete": "この科目を削除しますか？関連する時間割も削除されます。",
+    "deleteSuccess": "科目を削除しました",
+    "deleteError": "科目の削除に失敗しました",
+    "filterBySubject": "科目でフィルタ",
+    "allSubjects": "すべての科目"
   },
   "tasks": {
     "title": "タスク一覧",
     "create": "新しいタスクを登録",
     "edit": "タスクを編集",
     "delete": "タスクを削除",
-    "noTasks": "タスクが見つかりません"
+    "noTasks": "タスクが見つかりません",
+    "searchPlaceholder": "タスク名で検索...",
+    "noResults": "検索結果がありません",
+    "notRegistered": "タスクがありません",
+    "confirmDelete": "このタスクを削除しますか？関連するサブタスクも削除されます。",
+    "deleteSuccess": "タスクを削除しました",
+    "deleteError": "タスクの削除に失敗しました"
   },
   "exams": {
     "title": "テスト管理",
@@ -79,14 +93,28 @@
     "edit": "テストを編集",
     "delete": "テストを削除",
     "daysRemaining": "残り日数",
-    "progress": "テスト勉強進捗"
+    "progress": "テスト勉強進捗",
+    "notRegistered": "テストが登録されていません",
+    "confirmDelete": "このテストを削除しますか？",
+    "deleteSuccess": "テストを削除しました",
+    "deleteError": "テストの削除に失敗しました",
+    "filterBySubject": "科目でフィルタ",
+    "allSubjects": "すべての科目"
   },
   "classes": {
     "title": "授業回一覧",
     "create": "新しい授業回を登録",
     "edit": "授業回を編集",
     "delete": "授業回を削除",
-    "noClasses": "授業回が見つかりません"
+    "noClasses": "授業回が見つかりません",
+    "searchPlaceholder": "授業タイトルまたは科目名で検索...",
+    "noResults": "検索結果がありません",
+    "notRegistered": "授業回が登録されていません",
+    "confirmDelete": "この授業回を削除しますか？",
+    "deleteSuccess": "授業回を削除しました",
+    "deleteError": "授業回の削除に失敗しました",
+    "filterBySubject": "科目でフィルタ",
+    "allSubjects": "すべての科目"
   },
   "settings": {
     "title": "設定",

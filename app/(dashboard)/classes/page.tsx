@@ -10,11 +10,13 @@ import { loadData } from '@/lib/storage'
 import { ToastProvider, useToast } from '@/components/ui/Toast'
 import { Plus, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 import type { Class, Subject, Task } from '@/lib/types'
 
 function ClassesPageContent() {
   const router = useRouter()
   const { showToast } = useToast()
+  const { t } = useTranslation()
   const [classes, setClasses] = useState<Class[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
@@ -65,14 +67,14 @@ function ClassesPageContent() {
   }
 
   const handleDelete = (classId: string) => {
-    if (confirm('この授業回を削除しますか？')) {
+    if (confirm(t('classes.confirmDelete'))) {
       try {
         deleteClass(classId)
-        showToast('授業回を削除しました', 'success')
+        showToast(t('classes.deleteSuccess'), 'success')
         loadAllData()
       } catch (error) {
         console.error('Failed to delete class:', error)
-        showToast('授業回の削除に失敗しました', 'error')
+        showToast(t('classes.deleteError'), 'error')
       }
     }
   }
@@ -92,17 +94,17 @@ function ClassesPageContent() {
   }
 
   const subjectOptions = [
-    { value: '', label: 'すべての科目' },
+    { value: '', label: t('classes.allSubjects') },
     ...subjects.map((s) => ({ value: s.id, label: s.name })),
   ]
 
   return (
     <Container className="py-8">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">授業回一覧</h1>
+        <h1 className="text-3xl font-bold text-gray-900">{t('classes.title')}</h1>
         <Button onClick={handleCreate} variant="primary">
           <Plus className="h-5 w-5 mr-2" />
-          新しい授業回を登録
+          {t('classes.create')}
         </Button>
       </div>
 
@@ -111,7 +113,7 @@ function ClassesPageContent() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
           <Input
             type="text"
-            placeholder="授業タイトルまたは科目名で検索..."
+            placeholder={t('classes.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
@@ -119,7 +121,7 @@ function ClassesPageContent() {
         </div>
 
         <Select
-          label="科目でフィルタ"
+          label={t('classes.filterBySubject')}
           value={selectedSubjectId}
           onChange={(e) => setSelectedSubjectId(e.target.value)}
           options={subjectOptions}
@@ -128,7 +130,7 @@ function ClassesPageContent() {
 
       {filteredClasses.length === 0 ? (
         <div className="text-center py-12 text-gray-500">
-          <p>{searchQuery || selectedSubjectId ? '検索結果がありません' : '授業回が登録されていません'}</p>
+          <p>{searchQuery || selectedSubjectId ? t('classes.noResults') : t('classes.notRegistered')}</p>
         </div>
       ) : (
         <div className="space-y-4">

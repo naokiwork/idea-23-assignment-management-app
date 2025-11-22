@@ -125,6 +125,22 @@ export interface SubjectTemplate {
 }
 
 /**
+ * 学習ログテンプレート（StudyLogTemplate）
+ */
+export interface StudyLogTemplate {
+  id: string;
+  name: string;
+  description?: string;
+  category?: string;
+  content: string; // テンプレート内容（変数を含むことができる）
+  startTime?: string; // デフォルト開始時刻
+  endTime?: string; // デフォルト終了時刻
+  tags?: string[];
+  createdAt: string; // ISO 8601形式の日付文字列
+  updatedAt?: string; // ISO 8601形式の日付文字列
+}
+
+/**
  * 2.9 バックアップデータ（Backup）
  * すべてのデータを1つの構造で保存
  */

@@ -4,6 +4,10 @@ import React from 'react'
 import { Container } from '@/components'
 import { LanguageSelector } from '@/components/settings/LanguageSelector'
 import { NotificationSettings } from '@/components/settings/NotificationSettings'
+import { NotificationRules } from '@/components/settings/NotificationRules'
+import { NotificationHistory } from '@/components/notifications/NotificationHistory'
+import { BackupSettings } from '@/components/settings/BackupSettings'
+import { BackupList } from '@/components/backups/BackupList'
 import { KeyboardShortcuts } from '@/components/settings/KeyboardShortcuts'
 import { SyncStatus } from '@/components/sync/SyncStatus'
 import { ExportData } from '@/components/settings/ExportData'
@@ -30,6 +34,14 @@ function SettingsPageContent() {
           </Card>
 
           <NotificationSettings />
+
+          <NotificationRules />
+
+          <NotificationHistory />
+
+          <BackupSettings />
+
+          <BackupList />
 
           <KeyboardShortcuts />
 

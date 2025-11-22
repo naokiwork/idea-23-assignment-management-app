@@ -8,6 +8,7 @@ import { validateClass } from '@/lib/validation/classValidation'
 import { loadData } from '@/lib/storage'
 import type { Class, Subject } from '@/lib/types'
 import { useToast } from '../ui/Toast'
+import { logger } from '@/lib/utils/logger'
 
 export interface ClassFormProps {
   isOpen: boolean
@@ -34,11 +35,14 @@ export const ClassForm: React.FC<ClassFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    const data = loadData()
-    if (data) {
-      setSubjects(data.subjects)
+    // モーダルが開かれたときにデータを再読み込み
+    if (isOpen) {
+      const data = loadData()
+      if (data) {
+        setSubjects(data.subjects || [])
+      }
     }
-  }, [])
+  }, [isOpen])
 
   useEffect(() => {
     if (initialData) {
@@ -104,7 +108,7 @@ export const ClassForm: React.FC<ClassFormProps> = ({
       setFormData({ title: '', subjectId: '', date: '', time: '' })
       setErrors({})
     } catch (error) {
-      console.error('Failed to save class:', error)
+      logger.error('Failed to save class:', error)
       showToast(
         initialData?.id ? '授業回の更新に失敗しました' : '授業回の登録に失敗しました',
         'error'
@@ -114,10 +118,12 @@ export const ClassForm: React.FC<ClassFormProps> = ({
     }
   }
 
-  const subjectOptions = subjects.map((subject) => ({
-    value: subject.id,
-    label: subject.name,
-  }))
+  const subjectOptions = subjects.length > 0
+    ? subjects.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }))
+    : [{ value: '', label: '科目が登録されていません', disabled: true }]
 
   return (
     <Modal
@@ -143,9 +149,10 @@ export const ClassForm: React.FC<ClassFormProps> = ({
           value={formData.subjectId}
           onChange={handleChange}
           options={subjectOptions}
-          placeholder="科目を選択"
+          placeholder={subjects.length === 0 ? '科目が登録されていません' : '科目を選択'}
           error={errors.subjectId}
           required
+          disabled={subjects.length === 0}
         />
 
         <Input
