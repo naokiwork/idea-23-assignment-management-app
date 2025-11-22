@@ -11,11 +11,13 @@ import { loadData } from '@/lib/storage'
 import { ToastProvider, useToast } from '@/components/ui/Toast'
 import { Plus, Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 import type { Subject, Timetable, Task } from '@/lib/types'
 
 function SubjectsPageContent() {
   const router = useRouter()
   const { showToast } = useToast()
+  const { t } = useTranslation()
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [timetables, setTimetables] = useState<Timetable[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
@@ -51,14 +53,14 @@ function SubjectsPageContent() {
   }
 
   const handleDelete = (subjectId: string) => {
-    if (confirm('この科目を削除しますか？関連する時間割も削除されます。')) {
+    if (confirm(t('subjects.confirmDelete'))) {
       try {
         deleteSubject(subjectId)
-        showToast('科目を削除しました', 'success')
+        showToast(t('subjects.deleteSuccess'), 'success')
         loadAllData()
       } catch (error) {
         console.error('Failed to delete subject:', error)
-        showToast('科目の削除に失敗しました', 'error')
+        showToast(t('subjects.deleteError'), 'error')
       }
     }
   }
@@ -80,10 +82,10 @@ function SubjectsPageContent() {
   return (
     <Container className="py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">科目一覧</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('subjects.title')}</h1>
           <Button onClick={handleCreate} variant="primary">
             <Plus className="h-5 w-5 mr-2" />
-            新しい科目を登録
+            {t('subjects.create')}
           </Button>
         </div>
 
@@ -92,7 +94,7 @@ function SubjectsPageContent() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
             <Input
               type="text"
-              placeholder="科目名で検索..."
+              placeholder={t('subjects.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -102,7 +104,7 @@ function SubjectsPageContent() {
 
         {filteredSubjects.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p>{searchQuery ? '検索結果がありません' : '科目が登録されていません'}</p>
+            <p>{searchQuery ? t('subjects.noResults') : t('subjects.notRegistered')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

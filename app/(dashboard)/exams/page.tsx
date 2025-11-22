@@ -11,6 +11,7 @@ import { loadData } from '@/lib/storage'
 import { ToastProvider, useToast } from '@/components/ui/Toast'
 import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/lib/hooks/useTranslation'
 import type { Exam, Subject, Task } from '@/lib/types'
 import { getRequiredTasksForExam } from '@/lib/utils/examTasks'
 import { calculateTaskCompletionRate } from '@/lib/utils/completionRate'
@@ -18,6 +19,7 @@ import { calculateTaskCompletionRate } from '@/lib/utils/completionRate'
 function ExamsPageContent() {
   const router = useRouter()
   const { showToast } = useToast()
+  const { t } = useTranslation()
   const [exams, setExams] = useState<Exam[]>([])
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [tasks, setTasks] = useState<Task[]>([])
@@ -54,14 +56,14 @@ function ExamsPageContent() {
   }
 
   const handleDelete = (examId: string) => {
-    if (confirm('このテストを削除しますか？')) {
+    if (confirm(t('exams.confirmDelete'))) {
       try {
         deleteExam(examId)
-        showToast('テストを削除しました', 'success')
+        showToast(t('exams.deleteSuccess'), 'success')
         loadAllData()
       } catch (error) {
         console.error('Failed to delete exam:', error)
-        showToast('テストの削除に失敗しました', 'error')
+        showToast(t('exams.deleteError'), 'error')
       }
     }
   }
@@ -97,23 +99,23 @@ function ExamsPageContent() {
   }
 
   const subjectOptions = [
-    { value: '', label: 'すべての科目' },
+    { value: '', label: t('exams.allSubjects') },
     ...subjects.map((s) => ({ value: s.id, label: s.name })),
   ]
 
   return (
     <Container className="py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">テスト管理</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('exams.title')}</h1>
           <Button onClick={handleCreate} variant="primary">
             <Plus className="h-5 w-5 mr-2" />
-            新しいテストを登録
+            {t('exams.create')}
           </Button>
         </div>
 
         <div className="mb-6">
           <Select
-            label="科目でフィルタ"
+            label={t('exams.filterBySubject')}
             value={selectedSubjectId}
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             options={subjectOptions}
@@ -122,7 +124,7 @@ function ExamsPageContent() {
 
         {filteredExams.length === 0 ? (
           <div className="text-center py-12 text-gray-500">
-            <p>テストが登録されていません</p>
+            <p>{t('exams.notRegistered')}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

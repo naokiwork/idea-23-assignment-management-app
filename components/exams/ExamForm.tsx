@@ -8,6 +8,7 @@ import { validateExam } from '@/lib/validation/examValidation'
 import { loadData } from '@/lib/storage'
 import type { Exam, Subject } from '@/lib/types'
 import { useToast } from '../ui/Toast'
+import { logger } from '@/lib/utils/logger'
 
 export interface ExamFormProps {
   isOpen: boolean
@@ -34,12 +35,14 @@ export const ExamForm: React.FC<ExamFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
-    // 科目一覧を読み込む
-    const data = loadData()
-    if (data) {
-      setSubjects(data.subjects)
+    // モーダルが開かれたときにデータを再読み込み
+    if (isOpen) {
+      const data = loadData()
+      if (data) {
+        setSubjects(data.subjects || [])
+      }
     }
-  }, [])
+  }, [isOpen])
 
   useEffect(() => {
     // initialDataが変更されたときにフォームを更新
@@ -117,7 +120,7 @@ export const ExamForm: React.FC<ExamFormProps> = ({
       })
       setErrors({})
     } catch (error) {
-      console.error('Failed to save exam:', error)
+      logger.error('Failed to save exam:', error)
       showToast(
         initialData?.id ? 'テストの更新に失敗しました' : 'テストの登録に失敗しました',
         'error'
@@ -127,10 +130,12 @@ export const ExamForm: React.FC<ExamFormProps> = ({
     }
   }
 
-  const subjectOptions = subjects.map((subject) => ({
-    value: subject.id,
-    label: subject.name,
-  }))
+  const subjectOptions = subjects.length > 0
+    ? subjects.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }))
+    : [{ value: '', label: '科目が登録されていません', disabled: true }]
 
   return (
     <Modal
@@ -156,9 +161,10 @@ export const ExamForm: React.FC<ExamFormProps> = ({
           value={formData.subjectId}
           onChange={handleChange}
           options={subjectOptions}
-          placeholder="科目を選択"
+          placeholder={subjects.length === 0 ? '科目が登録されていません' : '科目を選択'}
           error={errors.subjectId}
           required
+          disabled={subjects.length === 0}
         />
 
         <Input

@@ -114,3 +114,4 @@ export function calculateLearningEfficiency(
   return (completionRate * 100) / (1 + timePerTask / 60) // 時間を時間単位に変換
 }
 
+

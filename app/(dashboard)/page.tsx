@@ -15,6 +15,12 @@ import { useKeyboardShortcuts, createDefaultShortcuts } from '@/lib/hooks/useKey
 import { useRouter } from 'next/navigation'
 import { logger } from '@/lib/utils/logger'
 import { useTranslation } from '@/lib/hooks/useTranslation'
+import { StatCard } from '@/components/dashboard/StatCard'
+import { InsightsPanel } from '@/components/dashboard/InsightsPanel'
+import { calculateRealtimeStatistics } from '@/lib/utils/realtimeStatistics'
+import { generateInsights } from '@/lib/utils/insightsGenerator'
+import { formatDuration } from '@/lib/utils/timeCalculation'
+import { Clock, CheckCircle, AlertCircle, Target } from 'lucide-react'
 
 function HomePageContent() {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -110,6 +116,26 @@ function HomePageContent() {
     })
     return names
   }, [subjects])
+
+  // リアルタイム統計
+  const realtimeStats = useMemo(() => {
+    try {
+      return calculateRealtimeStatistics()
+    } catch (err) {
+      logger.error('Error calculating realtime statistics:', err)
+      return null
+    }
+  }, [tasks])
+
+  // インサイト
+  const insights = useMemo(() => {
+    try {
+      return generateInsights()
+    } catch (err) {
+      logger.error('Error generating insights:', err)
+      return []
+    }
+  }, [tasks])
 
   // 完了タスク数
   const completedTasks = useMemo(() => {
